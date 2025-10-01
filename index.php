@@ -55,16 +55,22 @@ function consulta($conexion){
 }
 
 function insertar($conexion){
+    // el file_get_contents('php://input') lee lo que enviamos en el boddy y despues de leerlo lo decodificamos a un array
     $dato= json_decode(file_get_contents('php://input'), true);
+    // obtenemos el nombre
     $nombre= $dato['nombre'];
     
+    // inserccion en la base de datos
     $sql= "INSERT INTO usuarios(nombre) VALUES ('$nombre')";
     $resutlado= $conexion->query($sql);
 
     if($resutlado){
+        // obtiene el ultimo id y agregará el campo id al array en memoria
         $dato['id']= $conexion->insert_id;
+        // codificamos el array devuelta a un json y lo mostramos
         echo json_encode($dato);
     }else{
+        // si todo sale mal que muestre un json de error
         echo json_encode(array('error' => 'Error al crear el usuario'));
     }
 }
