@@ -38,7 +38,8 @@ switch($metodo){
         break;
     // Consulta del tipo UPDATE
     case 'PUT':
-        echo "editacion de registros - PUT";
+        // echo "editacion de registros - PUT";
+        actualizar($conexion, $id);
         break;
     // Consulta del tipo DELETE
     case 'DELETE':
@@ -97,5 +98,20 @@ function borrar($conexion, $id){
 
 }
 
+function actualizar($conexion, $id){
+    $dato= json_decode(file_get_contents('php://input'), true);
+    $nombre= $dato['nombre'];
+
+    echo "El id a editar es: {$id} con el dato {$nombre}";
+
+    $sql= "UPDATE usuarios SET nombre = '$nombre' WHERE id=$id";
+    $resutlado= $conexion->query($sql);
+
+    if($resutlado){
+        echo json_encode(array('Mensaje' => 'Usuario actualizado'));
+    }else{
+        echo json_encode(array('Error' => 'Error al actualizar usuario'));
+    }
+}
 
 ?>
