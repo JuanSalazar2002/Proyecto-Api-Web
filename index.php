@@ -29,7 +29,7 @@ switch($metodo){
     // Consulta del tipo SELECT
     case 'GET':
         // echo "consulta de registros - GET";
-        consulta($conexion);
+        consulta($conexion, $id);
         break;
     // Consulta del tipo INSERT
     case 'POST':
@@ -51,8 +51,8 @@ switch($metodo){
         break;
 }
 
-function consulta($conexion){
-    $sql= "SELECT * FROM usuarios";
+function consulta($conexion, $id){
+    $sql= ($id !== null)?"SELECT * FROM usuarios WHERE id=$id":"SELECT * FROM usuarios";
     $resultado= $conexion->query($sql);
 
     if($resultado){
