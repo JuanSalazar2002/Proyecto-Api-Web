@@ -17,6 +17,14 @@ $metodo= $_SERVER['REQUEST_METHOD'];
 // Acá imprimimos el nombre de ese método
 // print_r($metodo);
 
+// si está definida entonces que devuelva el valor extra
+// el $_SERVER['PATH_INFO'] se encarga de devolver la parte extra de la url
+$path= isset($_SERVER['PATH_INFO'])?$_SERVER['PATH_INFO']:'/'; // ejm: puede devolver "/5"
+// divide la parte obtenida en partes, lo convierte todo en un array
+$buscarId= explode('/', $path);
+// obtiene el ultimo valor del array
+$id= ($path!=='/') ? end($buscarId):null;
+
 switch($metodo){
     // Consulta del tipo SELECT
     case 'GET':
@@ -34,7 +42,8 @@ switch($metodo){
         break;
     // Consulta del tipo DELETE
     case 'DELETE':
-        echo "borrado de registros - DELETE";
+        // echo "borrado de registros - DELETE";
+        borrar($conexion, $id);
         break;
     default:
         echo "Método no permitido";
@@ -50,7 +59,7 @@ function consulta($conexion){
         while($fila= $resultado->fetch_assoc()){ // <- fetch_assoc() se encarga de devolver la siguiente fila, si ya no hay devuelve un null
             $datos[]= $fila; // <- esto es una manera "MODERNA" de añadir elementos a un array
         }
-        echo json_encode($datos);
+        echo json_encode($datos); // <- aca convertimos el array en un json
     }
 }
 
@@ -74,5 +83,19 @@ function insertar($conexion){
         echo json_encode(array('error' => 'Error al crear el usuario'));
     }
 }
+
+function borrar($conexion, $id){
+
+    $sql= "DELETE FROM usuarios WHERE id=$id";
+    $resutlado= $conexion->query($sql);
+
+    if($resutlado){
+        echo json_encode(array('Mensaje' => 'Usuario eliminado'));
+    }else{
+        echo json_encode(array('Error' => 'Error al eliminar usuario'));
+    }
+
+}
+
 
 ?>
